@@ -1,0 +1,102 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GROWTH LAB 44 | Safari Web 3Dと解剖アトラス</title><style>
+*{box-sizing:border-box}body{margin:0;background:#091422;color:#e9f1f9;font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN',sans-serif}header{padding:22px 18px 12px;background:#101f31}h1{font-size:22px;margin:0 0 9px;letter-spacing:.01em}.sub{color:#adbfcd;font-size:13px;line-height:1.7;margin:0}.tag{display:inline-block;font-size:11px;color:#8fe2df;border:1px solid #376b73;border-radius:30px;padding:5px 10px;margin-bottom:10px}.app{max-width:720px;margin:auto}.state{position:absolute;opacity:0;width:1px;height:1px}.scene{height:min(66vh,640px);min-height:430px;background:radial-gradient(ellipse at 50% 47%,#294258,#122438 60%,#091725);position:relative;overflow:hidden}.scene svg{display:block;width:100%;height:100%}.panel{display:none}.panel.external{display:block}#inner:checked~.scene .panel{display:none}#inner:checked~.scene .internal{display:block}#slice:checked~.scene .panel{display:none}#slice:checked~.scene .cross{display:block}#ghost:checked~.scene .panel{display:none}#ghost:checked~.scene .overlay{display:block}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:15px}.controls label{display:flex;align-items:center;justify-content:center;min-height:54px;border:1px solid #617e9b;border-radius:13px;background:#223952;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}#ext:checked~.controls label[for=ext],#inner:checked~.controls label[for=inner],#slice:checked~.controls label[for=slice],#ghost:checked~.controls label[for=ghost]{background:#087f9d;border-color:#7be1ec}.legend{padding:0 18px 12px;color:#b9cad8;font-size:12px;line-height:1.8}.info{padding:18px;margin:8px 15px 16px;border:1px solid #30485e;border-radius:14px;background:#102236}h2{font-size:17px;margin:0 0 10px}.info p,.info li{color:#c4d2dc;font-size:13px;line-height:1.8}.info ul{padding-left:20px}.small{font-size:11px;color:#9eb2c2;line-height:1.7}.foot{padding:0 18px 28px;color:#9eb2c2;font-size:12px;line-height:1.7}.external .label,.internal .label,.cross .label{fill:#e9f5ff;font-size:13px;font-weight:600}.leader{stroke:#a3dce7;stroke-width:1.2;fill:none}.dot{fill:#a3dce7}
+</style><style>
+.lab3d{margin:14px;border:1px solid #36536b;border-radius:16px;overflow:hidden;background:#112238}.lab3d h2{margin:0;padding:15px 15px 5px;font-size:17px}.lab3d p{margin:0;padding:0 15px 12px;color:#afc4d5;font-size:12px;line-height:1.7}#view3d{display:block;width:100%;height:410px;touch-action:none;background:radial-gradient(ellipse at 50% 42%,#294258,#102032 70%)}.lab3d .tools{display:flex;gap:7px;flex-wrap:wrap;padding:12px}.lab3d button{color:white;border:1px solid #6c8fa8;background:#243c54;border-radius:10px;padding:11px;font-size:13px;min-height:44px}.lab3d button[aria-pressed=true]{background:#087f9d;border-color:#88e9f2}.lab3d #status42{font-size:12px;color:#9ed6e4;padding:0 15px 14px}.fallback42{padding:8px 15px 15px;color:#b5c6d5;font-size:12px}
+
+.fallback43{position:absolute;top:22%;left:8%;right:8%;padding:18px;border:1px solid #6b829b;border-radius:12px;background:#192c43;color:#e5f2fa;text-align:center;z-index:2}.fallback43 p{font-size:13px;line-height:1.7}.lab3d{position:relative}
+</style></head><body><div class="app"><header><span class="tag">GROWTH LAB 44 · SAFARI WEB</span><h1>解剖アトラス｜外観 × 内部</h1><p class="sub">実物に近い陰影表現を目指した医療教育用イラスト。表示切替は前版で動作したCSS方式を継承。これは回転可能な3Dメッシュではありません。</p></header><section class="lab3d" aria-label="回転可能な3D模式モデル"><h2>研究44｜Safari Web 3Dと解剖アトラス</h2><p>指で左右・上下に回転。内部表示に切替可能。描画が動かなくても下の解剖アトラスは使えます。</p><div class="fallback43" id="fallback43"><strong>3D表示の準備中</strong><p>Web版で表示が変わらない場合はJavaScriptが停止しています。下の解剖図は利用できます。</p></div><canvas id="view3d" aria-label="陰茎解剖の模式的3D表示"></canvas><div class="tools"><button type="button" data-mode="outer" aria-pressed="true">外観3D</button><button type="button" data-mode="inside" aria-pressed="false">内部3D</button><button type="button" data-mode="wire" aria-pressed="false">ワイヤー</button><button type="button" id="reset42">視点リセット</button></div><div id="status42">JavaScript未実行：このプレビューでは3D回転できません。下の解剖図は操作できます。</div></section>
+<input class="state" type="radio" name="view" id="ext" checked><input class="state" type="radio" name="view" id="inner"><input class="state" type="radio" name="view" id="slice"><input class="state" type="radio" name="view" id="ghost">
+<div class="scene"><svg viewBox="0 0 440 650" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="陰茎の外観、内部、横断面の解剖学的模式イラスト"><defs>
+<linearGradient id="skin" x1="0" x2="1"><stop stop-color="#744c4a"/><stop offset=".12" stop-color="#ae7771"/><stop offset=".3" stop-color="#d6a39b"/><stop offset=".57" stop-color="#e5b4a8"/><stop offset=".8" stop-color="#b27c74"/><stop offset="1" stop-color="#6d4449"/></linearGradient>
+<radialGradient id="glans" cx=".43" cy=".3" r=".79"><stop stop-color="#f1c3b9"/><stop offset=".38" stop-color="#dca6a2"/><stop offset=".74" stop-color="#bd7e81"/><stop offset="1" stop-color="#794b57"/></radialGradient>
+<linearGradient id="cav" x1="0" x2="1"><stop stop-color="#582e45"/><stop offset=".45" stop-color="#b55d73"/><stop offset="1" stop-color="#562b42"/></linearGradient>
+<radialGradient id="section"><stop stop-color="#e9b4a6"/><stop offset=".7" stop-color="#c48c83"/><stop offset="1" stop-color="#805957"/></radialGradient>
+<linearGradient id="shine" x1="0" x2="1"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="12"/></filter>
+<pattern id="tissue" width="11" height="13" patternUnits="userSpaceOnUse"><path d="M0 6Q5 0 11 6 M0 12Q5 6 11 12" stroke="#efb6bc" stroke-opacity=".23" fill="none" stroke-width=".8"/></pattern>
+</defs>
+<ellipse cx="224" cy="581" rx="96" ry="20" fill="#050b13" opacity=".45" filter="url(#shadow)"/>
+<g class="panel external"><!-- external dorsal anatomical illustration -->
+<path d="M144 576 C142 549 145 515 144 475 C142 407 146 337 148 280 C149 241 151 200 151 170 C151 147 164 139 185 139 L256 139 C278 139 291 148 292 170 C293 204 296 244 297 281 C299 351 302 411 300 473 C299 517 301 548 297 576 C276 591 256 597 222 598 C187 597 162 591 144 576Z" fill="url(#skin)" stroke="#8d5d5b" stroke-width="1.4"/>
+<path d="M144 572 C168 587 273 591 297 572" fill="none" stroke="#6c4448" opacity=".45" stroke-width="5"/>
+<path d="M158 216 Q171 205 173 177" stroke="#f2c7b7" opacity=".24" stroke-width="3" fill="none"/>
+<path d="M281 225 Q272 204 270 179" stroke="#653f4c" opacity=".21" stroke-width="4" fill="none"/>
+<path d="M149 180 C136 163 133 144 140 130 C154 110 164 83 182 64 C196 49 209 45 221 45 C236 45 251 55 266 74 C284 99 292 117 303 137 C310 154 304 170 292 182 C276 196 247 198 221 197 C191 197 166 194 149 180Z" fill="url(#glans)" stroke="#925e66" stroke-width="1.7"/>
+<path d="M150 178 C174 195 267 199 293 178" stroke="#774853" stroke-width="10" stroke-linecap="round" fill="none" opacity=".84"/>
+<path d="M152 174 C176 188 269 191 292 174" stroke="#f0b6ae" stroke-width="2.6" fill="none" opacity=".8"/>
+<path d="M211 58 Q219 53 227 59" fill="none" stroke="#ffe1d1" stroke-opacity=".42" stroke-width="2"/>
+<ellipse cx="222" cy="62" rx="4.2" ry="9.2" fill="#945f65" opacity=".92"/>
+<path d="M194 219 Q202 330 193 450" stroke="#f4c8b6" opacity=".17" stroke-width="15" fill="none"/>
+<path d="M270 220 Q264 359 278 493" stroke="#593f46" opacity=".14" stroke-width="10" fill="none"/>
+<text x="27" y="95" class="label">亀頭</text><path class="leader" d="M66 101 L130 101 L169 91"/><circle cx="169" cy="91" r="2" class="dot"/>
+<text x="315" y="229" class="label">冠状溝</text><path class="leader" d="M315 235 L288 235 L280 188"/><circle cx="280" cy="188" r="2" class="dot"/>
+<text x="18" y="389" class="label">陰茎体</text><path class="leader" d="M76 395 L145 395"/><circle cx="145" cy="395" r="2" class="dot"/>
+</g>
+<g class="panel internal"><!-- schematic longitudinal dissection -->
+<path d="M140 576 Q144 390 145 170 Q149 140 180 138 L264 138 Q294 143 297 170 Q299 393 301 576 Q224 613 140 576Z" fill="#c8958b" opacity=".28" stroke="#e4b6aa" stroke-width="4"/>
+<path d="M150 180 Q150 150 181 150 L210 150 Q220 160 220 183 L220 573 Q202 590 151 571Z" fill="url(#cav)" stroke="#edc5b3" stroke-width="5"/>
+<path d="M230 183 Q230 156 243 150 L263 150 Q291 152 291 180 L291 571 Q258 591 230 573Z" fill="url(#cav)" stroke="#edc5b3" stroke-width="5"/>
+<path d="M150 180 Q150 150 181 150 L210 150 Q220 160 220 183 L220 573 Q202 590 151 571Z M230 183 Q230 156 243 150 L263 150 Q291 152 291 180 L291 571 Q258 591 230 573Z" fill="url(#tissue)"/>
+<path d="M210 235 Q211 216 222 216 Q233 216 234 235 L235 567 Q224 583 211 568Z" fill="#dc9c65" stroke="#eec995" stroke-width="2"/>
+<path d="M219 240 L226 240 L226 563 L219 563Z" fill="#fff0c6"/>
+<path d="M143 182 Q137 155 151 131 Q171 94 191 65 Q220 33 251 65 Q274 93 292 131 Q305 157 296 182 Q269 200 223 199 Q172 199 143 182Z" fill="#c77e88" opacity=".8" stroke="#eab3ae" stroke-width="3"/>
+<path d="M222 216 L222 72" stroke="#e1a675" stroke-width="19" stroke-linecap="round"/><path d="M222 216 L222 72" stroke="#ffedc7" stroke-width="6" stroke-linecap="round"/>
+<text x="11" y="280" class="label">左右の</text><text x="11" y="300" class="label">陰茎海綿体</text><path class="leader" d="M115 292 L163 292"/>
+<text x="300" y="392" class="label">尿道海綿体</text><path class="leader" d="M301 400 L230 400"/>
+<text x="301" y="448" class="label">尿道</text><path class="leader" d="M300 453 L223 453"/>
+<text x="12" y="527" class="label">白膜（模式）</text><path class="leader" d="M108 531 L151 531"/>
+</g>
+<g class="panel cross"><text x="220" y="75" text-anchor="middle" fill="#d6e8f4" font-size="19" font-weight="700">陰茎体の横断面</text><text x="220" y="104" text-anchor="middle" fill="#a6bed0" font-size="13">背側が上・腹側が下／模式図</text>
+<ellipse cx="220" cy="328" rx="166" ry="145" fill="url(#section)" stroke="#e7b5ab" stroke-width="5"/>
+<ellipse cx="156" cy="299" rx="80" ry="81" fill="#f2d1b8" stroke="#8f6362" stroke-width="2"/><ellipse cx="285" cy="299" rx="80" ry="81" fill="#f2d1b8" stroke="#8f6362" stroke-width="2"/>
+<ellipse cx="156" cy="299" rx="69" ry="70" fill="url(#cav)"/><ellipse cx="285" cy="299" rx="69" ry="70" fill="url(#cav)"/>
+<ellipse cx="156" cy="299" rx="69" ry="70" fill="url(#tissue)"/><ellipse cx="285" cy="299" rx="69" ry="70" fill="url(#tissue)"/>
+<ellipse cx="220" cy="402" rx="62" ry="49" fill="#edc6a0" stroke="#b27d6e" stroke-width="3"/><ellipse cx="220" cy="402" rx="16" ry="13" fill="#f8e9c5" stroke="#9d7766" stroke-width="2"/>
+<circle cx="220" cy="193" r="10" fill="#668bc4" stroke="#c6e4f7" stroke-width="2"/><circle cx="197" cy="206" r="5" fill="#e26869"/><circle cx="244" cy="206" r="5" fill="#e26869"/>
+<circle cx="126" cy="218" r="5" fill="#f3d58a"/><circle cx="315" cy="218" r="5" fill="#f3d58a"/>
+<text x="17" y="167" class="label">白膜</text><path class="leader" d="M64 174 L107 238"/>
+<text x="305" y="154" class="label">背側血管</text><path class="leader" d="M304 161 L228 193"/>
+<text x="22" y="505" class="label">尿道海綿体</text><path class="leader" d="M122 495 L187 433"/>
+<text x="315" y="510" class="label">尿道</text><path class="leader" d="M314 500 L234 407"/>
+<text x="220" y="550" text-anchor="middle" fill="#a6bed0" font-size="12">位置・サイズは教育用の概念表現</text>
+</g>
+<g class="panel overlay"><g opacity=".65"><path d="M144 576 Q145 391 148 170 Q149 139 185 139 L256 139 Q292 139 292 170 Q299 390 297 576 Q223 615 144 576Z" fill="#b97e77" opacity=".38" stroke="#e8bcb3" stroke-width="3"/><path d="M148 181 Q149 152 179 151 L210 151 Q219 159 219 183 L219 573 Q191 586 151 570Z" fill="url(#cav)"/><path d="M231 183 Q232 151 264 151 Q290 154 290 183 L290 570 Q260 588 231 573Z" fill="url(#cav)"/><path d="M212 220 Q222 210 233 220 L234 570 Q224 582 212 570Z" fill="#f4cb8f"/><path d="M220 230 L225 230 L225 561 L220 561Z" fill="#fff2cc"/></g><path d="M143 181 Q135 154 141 135 Q163 85 185 64 Q222 30 257 70 Q284 103 301 137 Q307 162 294 182 Q222 207 143 181Z" fill="url(#glans)" opacity=".72"/><text x="220" y="627" text-anchor="middle" fill="#c6dbe7" font-size="13">半透明：外形と内部の重ね合わせ</text></g>
+</svg></div>
+<div class="controls"><label for="ext">外観</label><label for="inner">内部・縦断</label><label for="slice">横断面</label><label for="ghost">半透明</label></div>
+<div class="legend">● 紫：左右の陰茎海綿体　● 黄：尿道海綿体　● 淡色：尿道　● 薄い外層：白膜の概念表現</div>
+<section class="info"><h2>研究41｜形状と機能を混同しないための評価</h2><p>今回の改良は「描画の見やすさ」と「構造の説明」を対象にした。形状が自然に見えても、組織成長や勃起機能の予測精度が向上したとは判定しない。</p><ul><li><b>形状：</b>外観、縦断、横断の3種類の視点を区別。</li><li><b>操作：</b>CSSラジオ切替のみ。外部ライブラリとJavaScriptを使わない。</li><li><b>未検証：</b>個体別の実測形状、血管径、神経走行、材料特性、血流、成長。</li></ul><p class="small">この図は医療教育用の模式イラストです。人体計測、診断、自己実験、治療設計には使えません。</p></section><div class="foot">GROWTH LAB 44 · Safari web prototype · 2026-11-05</div></div><script>
+window.addEventListener("error",function(e){var s=document.getElementById("status42");if(s)s.textContent="JavaScriptエラー: "+e.message;});
+(function(){
+'use strict';
+const fb=document.getElementById('fallback43');
+const cv=document.getElementById('view3d'),ctx=cv&&cv.getContext('2d'),status=document.getElementById('status42');
+if(!ctx){status.textContent='Canvas非対応：下の解剖アトラスをご利用ください';return;}
+let mode='outer',yaw=-.35,pitch=.12,zoom=1,drag=false,px=0,py=0;
+const tris=[];
+function addRingSurface(name, color, n, rows, profile, offsetX=0,offsetY=0){
+ const rings=[];
+ for(let j=0;j<=rows;j++){const t=j/rows, p=profile(t),ring=[];
+ for(let i=0;i<n;i++){const a=i*2*Math.PI/n;ring.push([offsetX+p.rx*Math.cos(a),offsetY+p.ry*Math.sin(a),p.z]);}rings.push(ring);}
+ for(let j=0;j<rows;j++)for(let i=0;i<n;i++){let k=(i+1)%n,a=rings[j][i],b=rings[j][k],c=rings[j+1][k],d=rings[j+1][i];tris.push({v:[a,b,c],name,color});tris.push({v:[a,c,d],name,color});}
+}
+// z is longitudinal axis; geometric dimensions are illustrative, not measured anatomy.
+addRingSurface('shaft','#bd7c73',32,34,t=>({z:-2.8+4.8*t,rx:.72*(1+.045*Math.sin(t*Math.PI)),ry:.67*(1+.035*Math.sin(t*Math.PI))}));
+addRingSurface('glans','#dca092',32,30,t=>{let q=Math.sin(Math.PI*(.10+.88*t));return {z:1.92+1.7*t,rx:.88*Math.pow(Math.max(.005,q),.68),ry:.78*Math.pow(Math.max(.005,q),.68)};});
+addRingSurface('corona','#ae696a',32,5,t=>({z:1.86+.22*t,rx:.80+.12*Math.sin(t*Math.PI),ry:.73+.10*Math.sin(t*Math.PI)}));
+addRingSurface('leftCC','#ba4c65',22,24,t=>({z:-2.7+4.8*t,rx:.29,ry:.31}),-.34,.16);
+addRingSurface('rightCC','#cb6574',22,24,t=>({z:-2.7+4.8*t,rx:.29,ry:.31}),.34,.16);
+addRingSurface('spongiosum','#e3a04c',20,24,t=>({z:-2.7+5.0*t,rx:.27,ry:.27}),0,-.41);
+addRingSurface('urethra','#67c7cf',16,24,t=>({z:-2.8+5.7*t,rx:.095,ry:.095}),0,-.42);
+function project(p,w,h){const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);let x=p[0]*cy-p[1]*sy,y=p[0]*sy+p[1]*cy,z=p[2];let yy=y*cp-z*sp,zz=y*sp+z*cp;let scale=Math.min(w/4.7,h/8.8)*zoom;return [w/2+x*scale,h/2-zz*scale,yy];}
+function render(){const rect=cv.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,rect.width),h=Math.max(1,rect.height);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+let visible=tris.filter(t=>mode==='outer'?['shaft','glans','corona'].includes(t.name):!['shaft','glans','corona'].includes(t.name));
+let projected=visible.map(t=>{let pts=t.v.map(v=>project(v,w,h));return {pts,depth:pts.reduce((a,p)=>a+p[2],0)/3,color:t.color};});projected.sort((a,b)=>b.depth-a.depth);
+for(const f of projected){const p=f.pts;ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);ctx.lineTo(p[1][0],p[1][1]);ctx.lineTo(p[2][0],p[2][1]);ctx.closePath();if(mode==='wire'){ctx.strokeStyle='rgba(151,215,244,.50)';ctx.lineWidth=.65;ctx.stroke();}else{let light=Math.max(.38,Math.min(1.12,.80-f.depth*.08));ctx.fillStyle=shade(f.color,light);ctx.fill();ctx.strokeStyle='rgba(36,38,53,.09)';ctx.lineWidth=.35;ctx.stroke();}}
+status.textContent='3D描画完了｜'+(mode==='outer'?'外観':mode==='inside'?'内部':'ワイヤー')+'｜指で回転・ピンチで拡大';}
+function shade(hex,k){let s=hex.slice(1);return 'rgb('+[0,2,4].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(s.slice(i,i+2),16)*k)))).join(',')+')';}
+let startDist=null;cv.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;cv.setPointerCapture(e.pointerId)});cv.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-px)*.012;pitch=Math.max(-1.25,Math.min(1.25,pitch+(e.clientY-py)*.008));px=e.clientX;py=e.clientY;render()});cv.addEventListener('pointerup',()=>drag=false);cv.addEventListener('pointercancel',()=>drag=false);
+cv.addEventListener('touchmove',e=>{if(e.touches.length===2){let a=e.touches[0],b=e.touches[1],dist=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(startDist)zoom=Math.max(.55,Math.min(2.6,zoom*dist/startDist));startDist=dist;render()}},{passive:true});cv.addEventListener('touchend',()=>startDist=null);
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render()}));document.getElementById('reset42').addEventListener('click',()=>{yaw=-.35;pitch=.12;zoom=1;render()});window.addEventListener('resize',render);
+try{render();if(fb)fb.style.display='none'}catch(e){status.textContent='3D描画エラー：'+e.message+'。下の解剖アトラスは利用できます。';}
+})();
+</script></body></html>
